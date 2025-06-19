@@ -19,7 +19,7 @@ export default function CheckoutForm({cart} : {cart: CartItem[]}) {
  const validatePhone = (): boolean => {
   const phoneRegex = /^(\+7|8)[\s\-]?(?:$\d{3}$|\d{3})[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}$/
 
-  // Проверяем длину и формат
+  // Проверяем формат
   return phoneRegex.test(phone) 
 }
 

@@ -14,7 +14,7 @@ export type CartItem = {
 
 
 
-// 🔁 Загрузка из localStorage
+// Загрузка из localStorage
 const loadCartFromLocalStorage = (): CartItem[] => {
   if (typeof window === 'undefined') return []
 
@@ -27,7 +27,7 @@ const loadCartFromLocalStorage = (): CartItem[] => {
   }
 }
 
-// 💾 Сохранение в localStorage
+// Сохранение в localStorage
 const saveCartToLocalStorage = (cart: CartItem[]) => {
   if (typeof window !== 'undefined') {
     localStorage.setItem('cart', JSON.stringify(cart))
@@ -89,9 +89,7 @@ const cartSlice = createSlice({
       }
       return []
     },
-    setPhone(state, action) {
-      state.phone = action.payload
-    },
+   
   },
 })
 
@@ -101,7 +99,6 @@ export const {
   decrementQuantity,
   removeFromCart,
   clearCart, 
-  setPhone
 } = cartSlice.actions
 
 export default cartSlice.reducer

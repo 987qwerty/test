@@ -4,9 +4,7 @@ import React, { useState, useEffect } from 'react';
 import CheckoutForm from './CheckoutForm'
 
 
-type RootState = {
-  cart: CartItem[]
-}
+
 export type CartItem = {
   id: number
   title: string
