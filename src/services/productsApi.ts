@@ -5,6 +5,7 @@ export type Products = {
     items:{
         id: number
         title: string
+        description: String
         price: number
         image_url: string
     }[]

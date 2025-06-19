@@ -24,11 +24,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased  vsc-initialized`}
       >
-        <Providers>{children}</Providers>
+      <div className="bg-[#777777] m-10 mx-auto w-[80%] text-center rounded-md">
+        <h1 className='text-5xl'>Тестовое задание</h1>
+      </div>        <Providers>{children}</Providers>
       </body>
     </html>
   );

@@ -1,12 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+export type RootState = {
+    cart: CartItem[]
+}
 export type CartItem = {
   id: number
-  name: string
+  title: string
   price: number
-  image: string
+  description: String
+  image_url: string
   quantity: number
 }
+
+
 
 // 🔁 Загрузка из localStorage
 const loadCartFromLocalStorage = (): CartItem[] => {
@@ -34,7 +40,7 @@ const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action: PayloadAction<Omit<CartItem, 'quantity'>>) => {
       const item = action.payload
-      const existing = state.find(i => i.id === item.id)
+      const existing = state['id']
 
       if (existing) {
         existing.quantity += 1
@@ -77,6 +83,15 @@ const cartSlice = createSlice({
       saveCartToLocalStorage(newState)
       return newState
     },
+    clearCart: (state) => {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('cart')
+      }
+      return []
+    },
+    setPhone(state, action) {
+      state.phone = action.payload
+    },
   },
 })
 
@@ -85,6 +100,8 @@ export const {
   incrementQuantity,
   decrementQuantity,
   removeFromCart,
+  clearCart, 
+  setPhone
 } = cartSlice.actions
 
 export default cartSlice.reducer

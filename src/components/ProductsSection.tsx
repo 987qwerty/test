@@ -9,16 +9,18 @@ type Product = {
       id: number
       title: string
       price: number
+      description: String
       image_url: string
+      quantity: number
 }
 
 export default function ProductsSection({page} : {page: number}) {
-  const { data, isLoading, error } = useGetProductPageQuery({page:page, limit: 20})
+  const { data, isLoading, error }  = useGetProductPageQuery({page:page, limit: 20})
   const router = useRouter()
 
-  if (isLoading ) return <p>Загрузка товаров...</p>
-  if (error) return <p>Ошибка загрузки товаров</p>
-  if (!data) return <p>Нет данных</p>
+  if (isLoading ) return <p className='text-center m-10'>Загрузка товаров...</p>
+  if (error) return <p className='text-center m-10'>Ошибка загрузки товаров</p>
+  if (!data) return <p className='text-center m-10'>Нет данных</p>
 
   return (
     <div>
@@ -29,7 +31,7 @@ export default function ProductsSection({page} : {page: number}) {
       </div> 
 
       <div className="flex justify-around m-10">
-        {page > 1 ? <button className='w-10 h-10 bg-gray-200 text-black text-2xl  rounded-2xl' onClick={() => router.push((page - 1).toString())}>{'<'}</button> : ""}
+        {page > 1 ? <button className='w-10 h-10 bg-[#D9D9D9] text-black text-2xl  rounded-2xl' onClick={() => router.push((page - 1).toString())}>{'<'}</button> : ""}
         
         <button className='w-10 h-10 bg-gray-200 text-black text-2xl  rounded-2xl' onClick={() => router.push((page + 1).toString())}>{'>'}</button>
       </div>
