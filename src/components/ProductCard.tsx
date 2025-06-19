@@ -1,53 +1,46 @@
-"use client"
+'use client'
 
-import { Product } from '@/services/productsApi'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+import Image from 'next/image'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '@/store/cartSlice'
+import {
+  addToCart,
+  incrementQuantity,
+  decrementQuantity,
+  removeFromCart,
+} from '@/store/cartSlice'
 
-
-type CartItem = {
-  quantity: number
+type Product = {
+  id: number
+  title: string
+  price: number
+  image_url: string
 }
 
+export default function ProductCard({ product }: { product: Product }) {
+  const dispatch = useDispatch()
 
-export default function ProductCard({product}: {product: Product}) {
-    const [quantity, setQuantity] = useState<number>(0)
-    const [isInCart, setIsInCart] = useState<boolean>(false)
-    // Загружаем состояние корзины из localStorage
-    useEffect(() => {
-      const cart = JSON.parse(localStorage.getItem('cart') || '{}')
-      if (cart[product.id]) {
-        setIsInCart(true)
-        setQuantity(cart[product.id].quantity)
-      }
-    }, [product.id])
+  const cart = useSelector((state: RootState) => state.cart)
+  const item = cart.find(i => i.id === product.id)
+  const isInCart = !!item
+  const quantity = item?.quantity || 0
 
-    const addToCart = () => {
-        const cart = JSON.parse(localStorage.getItem('cart') || '{}')
-        cart[product.id] = { quantity: 1 }
-        localStorage.setItem('cart', JSON.stringify(cart))
-        setQuantity(1)
-        setIsInCart(true)
-  }
-    const updateQuantity = (newQuantity: number) => {
-        if (newQuantity < 1) return
-        const cart = JSON.parse(localStorage.getItem('cart') || '{}')
-        cart[product.id] = { quantity: newQuantity }
-        localStorage.setItem('cart', JSON.stringify(cart))
-        setQuantity(newQuantity)
-    }
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = parseInt(e.target.value)
-        if (!isNaN(value)) updateQuantity(value)
-    }
-    const removeFromCart = () => {
-        const cart = JSON.parse(localStorage.getItem('cart') || '{}')
-        delete cart[product.id]
-        localStorage.setItem('cart', JSON.stringify(cart))
-        setQuantity(0)
-        setIsInCart(false)
+  const handleAddToCart = () => {
+    dispatch(addToCart(product))
   }
 
+  const handleIncrement = () => {
+    dispatch(incrementQuantity(product.id))
+  }
+
+  const handleDecrement = () => {
+    if (quantity === 1) {
+      dispatch(removeFromCart(product.id))
+    } else {
+      dispatch(decrementQuantity(product.id))
+    }
+  }
 
   return (
     <div className="bg-white rounded shadow p-4 flex flex-col text-black">
@@ -63,7 +56,7 @@ export default function ProductCard({product}: {product: Product}) {
 
       {!isInCart ? (
         <button
-          onClick={addToCart}
+          onClick={handleAddToCart}
           className="mt-auto bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
         >
           Купить
@@ -71,26 +64,20 @@ export default function ProductCard({product}: {product: Product}) {
       ) : (
         <div className="flex items-center justify-between mt-auto">
           <button
-            onClick={() => updateQuantity(quantity - 1)}
+            onClick={handleDecrement}
             className="bg-gray-300 px-3 py-1 rounded"
           >
             -
           </button>
-          <input
-            type="number"
-            value={quantity}
-            onChange={handleInputChange}
-            className="w-12 text-center border rounded"
-            min="1"
-          />
+          <span>{quantity}</span>
           <button
-            onClick={() => updateQuantity(quantity + 1)}
+            onClick={handleIncrement}
             className="bg-gray-300 px-3 py-1 rounded"
           >
             +
           </button>
           <button
-            onClick={removeFromCart}
+            onClick={() => dispatch(removeFromCart(product.id))}
             className="text-red-500 ml-2 text-sm"
           >
             Удалить

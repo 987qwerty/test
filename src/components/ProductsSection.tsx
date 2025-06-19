@@ -2,20 +2,37 @@
 
 import React, { useEffect, useState } from 'react'
 import ProductCard from './ProductCard'
-import { useGetProductPageQuery, Product } from '@/services/productsApi'
+import { useGetProductPageQuery } from '@/services/productsApi'
+import { useRouter } from 'next/navigation'
 
-export default function ProductsSection() {
-  const { data, isLoading, error } = useGetProductPageQuery({page:1, limit: 20})
+type Product = {
+      id: number
+      title: string
+      price: number
+      image_url: string
+}
+
+export default function ProductsSection({page} : {page: number}) {
+  const { data, isLoading, error } = useGetProductPageQuery({page:page, limit: 20})
+  const router = useRouter()
 
   if (isLoading ) return <p>Загрузка товаров...</p>
   if (error) return <p>Ошибка загрузки товаров</p>
   if (!data) return <p>Нет данных</p>
 
   return (
-    <div className="grid m-10 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {data.items.map((product: Product) => (
-        <ProductCard key={product.id} product={product} />
-      ))}
+    <div>
+       <div className="grid m-10 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+         {data.items.map((product: Product) => (
+           <ProductCard key={product.id} product={product} />
+         ))}
+      </div> 
+
+      <div className="flex justify-around m-10">
+        {page > 1 ? <button className='w-10 h-10 bg-gray-200 text-black text-2xl  rounded-2xl' onClick={() => router.push((page - 1).toString())}>{'<'}</button> : ""}
+        
+        <button className='w-10 h-10 bg-gray-200 text-black text-2xl  rounded-2xl' onClick={() => router.push((page + 1).toString())}>{'>'}</button>
+      </div>
     </div>
   )
 }
